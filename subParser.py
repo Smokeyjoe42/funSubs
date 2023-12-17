@@ -6,12 +6,16 @@ Output: a deck of flashCards"""
 
 #TODO add a try catch
 #TODO add start and end tuples
-def createCards(subFile, targetLength):
-    file = open(subFile, 'r')
+def createCards(subFile, targetLength, setName, numOfCards):
+    try:
+        file = open(subFile, 'r')
+    except:
+        print("An error occured opening ", subFile)
     
-    cards = []
+    allCards = []
     
-    timestamp_pattern = r'\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}'
+    #timestamp_pattern = r'\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}'
+    timestamp_pattern = r'\d{2}:\d{2}:\d{2},\d{3}'
     
     while line := file.readline():
         line = line.replace("\n","")
@@ -37,9 +41,39 @@ def createCards(subFile, targetLength):
                 content += " " + cLine
             
             timestamp = getTimeStamps(s_timestamp)
+            #print(timestamp[0], ":", timestamp[1], '\n')
             
-            cards.append(flashCard(timestamp[0], timestamp[1], content, ""))
+            allCards.append(flashCard(timestamp[0], timestamp[1], content, "", setName))
                 
+
+    #return allCards
+    
+    """break the flashcards into londer segements based on the length of the flashCard"""
+    cards = [] 
+    start = 0
+    needsNewStart = False
+    i = 0
+
+    for card in allCards:
+
+        if(i >= numOfCards):        
+            break
+        
+        if (needsNewStart):
+            start = card.start
+            needsNewStart = False
+            content = ""
+
+        content += card.content
+        
+        if (card.end - start > targetLength):
+           cards.append(flashCard(start, card.end, content, "", setName)) 
+           #print("card created ->", start, ":", allCards[i].end)
+           needsNewStart = True
+           i += 1
+
+    #for card in cards: 
+        #print("card created ->", card.start, ":", card.end)
 
     return cards
 
@@ -47,7 +81,7 @@ def createCards(subFile, targetLength):
 def getTimeStamps(s_timeStamp):
     timestamp_pattern = r'\d{2}:\d{2}:\d{2},\d{3}'
     getDigit = r'\d{2}'
-    
+
     startAndEnd = re.findall(timestamp_pattern, s_timeStamp)
     
     s_start = re.findall('\d{2}', startAndEnd[0])
@@ -67,4 +101,4 @@ def getTimeStamps(s_timeStamp):
     
     return(start, end)
     
-getTimeStamps("00:22:49,716 --> 00:22:52,588")
+#getTimeStamps("00:22:49,716 --> 00:22:52,588")
