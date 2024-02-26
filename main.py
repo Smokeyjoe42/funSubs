@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import tkinter as tk
 from subParser import createCards
 from flashCard import flashCard
 from clips import *
@@ -10,6 +11,9 @@ subFile = "subs.srt"
 mediaCollDir = "/mnt/c/Users/joewm/appdata/Roaming/Anki2/User 1/collection.media/"
 setName = "whatWeDoInTheShadows"
 flashCardPath = "/mnt/c/Users/joewm/Documents/ankiDecks/"
+
+window = tk.Tk()
+window.title("funSubs")
 
 #Need to wrap this for use on other systems
 #os.system(f"ffmpeg -i {videoFile} {subFile}")
